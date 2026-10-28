@@ -153,8 +153,15 @@ footer{text-align:center;color:#7b8496;font-size:.8rem;padding:8px 16px 30px}
       activeVoices=[];
       const now=audioCtx.currentTime+0.025;
       const master=audioCtx.createGain();
-      master.gain.value=0.72;
-      master.connect(audioCtx.destination);
+      master.gain.value=1.0;
+      const limiter=audioCtx.createDynamicsCompressor();
+      limiter.threshold.value=-10;
+      limiter.knee.value=6;
+      limiter.ratio.value=8;
+      limiter.attack.value=0.003;
+      limiter.release.value=0.18;
+      master.connect(limiter);
+      limiter.connect(audioCtx.destination);
       buffers.forEach((buffer,i)=>{
         const source=audioCtx.createBufferSource();
         source.buffer=buffer;
